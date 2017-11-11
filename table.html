@@ -13,114 +13,235 @@
 <body>
     <div class="container">
         <div class="jumbotron">
-            <h1 class="text-center"><span class="glyphicon glyphicon-fire">
-        
-      </span>
-      Hot Restaurant</h1>
+            <h1 class="text-center">
+                <span class="glyphicon glyphicon-fire">
+
+                </span>
+                Hot Restaurant</h1>
             <h3 class="text-center">Current Reservations and Waiting List</h3>
             <br>
-            <div class="text-center"><a href="/reserve">
-                <button type="button" class="btn btn-danger btn-lg" id="reserve"><span class="glyphicon glyphicon-credit-card"></span> Make Reservation</button>
-            </a>
-            <a href="/home">
-                <button type="button" class="btn btn-default btn-lg" id="home"><span class="glyphicon glyphicon-home"></span></button>
-            </a>
+            <div class="text-center">
+                <a href="/reserve">
+                    <button type="button" class="btn btn-danger btn-lg" id="reserve">
+                        <span class="glyphicon glyphicon-credit-card"></span> Make Reservation</button>
+                </a>
+                <a href="/home">
+                    <button type="button" class="btn btn-default btn-lg" id="home">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </button>
+                </a>
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><strong>Current Reservation</strong></h3>
+            <div class="panel-heading" id="reservation-search">
+                <h3 class="panel-title">
+                    <strong>Current Reservation</strong>
+                </h3>
             </div>
-            <div class="panel-body">
-                
+            <div class="panel-body" id="tableSection">
             </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" >
+            <h3 class="panel-title">
+                <strong>Waiting List</strong>
+            </h3>
+        </div>
+        <div class="panel-body" id="tableWait">
+
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><strong>Waiting List</strong></h3>
-            </div>
-            <div class="panel-body">
-                
-            </div>     
-            
-            
-                
-            </div>
-        </div>
 
-        <script type="text/javascript">
-        
 
-	function tableQuery(){
-        
-               
-                var currentURL = window.location.origin;
-        
-                $.ajax({url: currentURL + "/confirmed", method: "GET"})
-                    .done(function(tableData) {
-        
-                        console.log("URL: " + currentURL + "/confirmed");
+    </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        $.get("/confirmed", function (data) {
+            console.log(data);
+
+            for (i = 0; i < data.length; i++) {
+
+                var tableSection = $("<div>");
+
+                tableSection.addClass('well');
+
+                tableSection.attr('id', 'tableWell-' + i + 1);
+
+                $('#tableSection').append(tableSection);
+
+                var tableNumber = i + 1;
+
+                $("#tableWell-" + i + 1).append('<h2><span class="label label-primary">' +
+                    tableNumber + "</span> | " + 
+
+
+                    "\n Name: " + data[i].name + 
+
+                    "<br>"+
+
+                    "\n Phone Number: " + data[i].phoneNumber +
                     
-                        console.log(tableData);
-                        
-        
-                        for (var i=0; i<tableData.length; i++){
-        
-                            
-                            var tableSection = $("<div>");
-                            tableSection.addClass('well');
-                            tableSection.attr('id', 'tableWell-' + i+1)
-                            $('#tableSection').append(tableSection);
-        
-                            var tableNumber = i + 1;
-        
-                            $("#tableWell-"+ i+1).append('<h2><span class="label label-primary">' 
-                            + tableNumber + "</span> | " + tableData[i].customerID + "</h2>");
-                        }
-                    });
-            }
-        
-            function waitListQuery(){
-        
-                
-                var currentURL = window.location.origin;
-        
-               
-                $.ajax({url: currentURL + "/wait", method: "GET"})
-                    .done(function(waitlistData) {
-        
-                        console.log("URL: " + currentURL + "/wait");
-                       
-                        console.log(waitlistData);
-                       
-        
-                        for (var i = 0; i < waitlistData.length; i++){
-        
-                            var waitlistSection = $("<div>");
-                            waitlistSection.addClass('well');
-                            waitlistSection.attr('id', 'waitlistWell-' + i+1)
-                            $('#waitlistSection').append(waitlistSection);
-        
-                            var tableNumber = i + 1;
-        
-                            
-                            $("#waitlistWell-"+ i+1).append('<h2><span class="label label-primary">' 
-                            + tableNumber + "</span> | " + waitlistData[i].customerID + "</h2>");
-                        }
-                    });
+                    "<br>"+
+
+                    "\n Number of Guests: " + data[i].guestTotal +
+
+                    "<br>"+
+
+                    "\n Guest Email: " + data[i].guestEmail +
+                    
+                    "</h2>");
             }
         
 
+
+        // if (data[i]) {
+        //     $("#stats").show();
+        //     $("#name").html(data[i].name);
+        //     $("#phone").html(data[i].phoneNumber);
+        //     $("#guests").html(data[i].guestTotal);
+        //     $("#email").html(data[i].guestEmail);
+        // } else {
+        //     $("#name").html("There are no reservations!");
+
+        // }
+        // }
+        });
+
+        });
+
+
+
+
+        $(document).ready(function () {
+
+        $.get("/wait", function (data) {
+            console.log(data);
+
+            for (i = 0; i < data.length; i++) {
+
+                var tableWait = $("<div>");
+
+                        tableWait.addClass('well');
+
+                        tableWait.attr('id', 'waitWell-' + i + 1);
+
+                $('#tableWait').append(tableWait);
+
+                var waitNumber = i + 1;
+
+                $("#waitWell-" + i + 1).append('<h2><span class="label label-primary">' +
+                        waitNumber + "</span> | " + 
+
+
+                    "\n Name: " + data[i].name + 
+
+                    "<br>"+
+
+                    "\n Phone Number: " + data[i].phoneNumber +
+                    
+                    "<br>"+
+
+                    "\n Number of Guests: " + data[i].guestTotal +
+
+                    "<br>"+
+                    
+                    "\n Guest Email: " + data[i].guestEmail +
+                    
+                    "</h2>");
+            }
         
-            // Run Queries
-           
-            tableQuery();
-            waitListQuery();
-        
-        
-        
-        </script>
+
+
+        // if (data[i]) {
+        //     $("#stats").show();
+        //     $("#name").html(data[i].name);
+        //     $("#phone").html(data[i].phoneNumber);
+        //     $("#guests").html(data[i].guestTotal);
+        //     $("#email").html(data[i].guestEmail);
+        // } else {
+        //     $("#name").html("There are no reservations!");
+
+        // }
+        // }
+        });
+
+        });
+
+
+        // function tableQuery(){
+
+
+        //             var currentURL = window.location.origin;
+
+        //             $.ajax({url: currentURL + "/confirmed", method: "GET"})
+        //                 .done(function(tableData) {
+
+        //                     console.log("URL: " + currentURL + "/confirmed");
+
+        //                     console.log(tableData);
+
+
+        //                     for (var i=0; i<tableData.length; i++){
+
+
+        //                         var tableSection = $("<div>");
+        //                         tableSection.addClass('well');
+        //                         tableSection.attr('id', 'tableWell-' + i+1)
+        //                         $('#tableSection').append(tableSection);
+
+        //                         var tableNumber = i + 1;
+
+        //                         $("#tableWell-"+ i+1).append('<h2><span class="label label-primary">' 
+        //                         + tableNumber + "</span> | " + tableData[i].customerID + "</h2>");
+        //                     }
+        //                 });
+        //         }
+
+        //         function waitListQuery(){
+
+
+        //             var currentURL = window.location.origin;
+
+
+        //             $.ajax({url: currentURL + "/wait", method: "GET"})
+        //                 .done(function(waitlistData) {
+
+        //                     console.log("URL: " + currentURL + "/wait");
+
+        //                     console.log(waitlistData);
+
+
+        //                     for (var i = 0; i < waitlistData.length; i++){
+
+        //                         var waitlistSection = $("<div>");
+        //                         waitlistSection.addClass('well');
+        //                         waitlistSection.attr('id', 'waitlistWell-' + i+1)
+        //                         $('#waitlistSection').append(waitlistSection);
+
+        //                         var tableNumber = i + 1;
+
+
+        //                         $("#waitlistWell-"+ i+1).append('<h2><span class="label label-primary">' 
+        //                         + tableNumber + "</span> | " + waitlistData[i].customerID + "</h2>");
+        //                     }
+        //                 });
+        //         }
+
+
+
+        //         // Run Queries
+
+        //         tableQuery();
+        //         waitListQuery();
+    </script>
 </body>
 
 </html>
